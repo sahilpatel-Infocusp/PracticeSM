@@ -1,11 +1,14 @@
 package com.companyname.practicesm.auth
 
 import android.util.Log
+import com.companyname.practicesm.firestoreutil.addUserData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
@@ -43,11 +46,7 @@ suspend fun signUp(
         continuation ->
         auth.createUserWithEmailAndPassword(email,password)
             .addOnSuccessListener {
-                val userId = getUser()!!.uid
-                Log.v("SignUp","User Created with id $userId")
-
-
-
+                Log.v("SignUp","User Created with id ${getUser()!!.uid}")
                 continuation.resume(true)
             }
             .addOnFailureListener{
