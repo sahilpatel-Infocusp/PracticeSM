@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.companyname.practicesm.routes.Routes
 import com.companyname.practicesm.viewmodels.SignInViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -45,19 +46,24 @@ fun SignInScreen(
     val password = rememberSaveable {
         mutableStateOf("")
     }
+
+
+
     val isLoading = rememberSaveable {
-        signInViewModel.isLoading.value
+        signInViewModel.isLoading
     }
 
     LaunchedEffect(key1 = signInViewModel.errorMessage){
         signInViewModel.errorMessage.collectLatest {
-            if(it.isNotEmpty()){
-                Toast.makeText(context,it,Toast.LENGTH_SHORT).show()
+            if (it.isNotEmpty()) {
+                Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
             }
+            signInViewModel.resetErrorMessage()
         }
-        signInViewModel.resetErrorMessage()
+        //Launched effect won't rerun on errormessage change
     }
-    if(isLoading){
+
+    if(isLoading.value){
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center,
@@ -96,7 +102,7 @@ fun SignInScreen(
             scope.launch {
                 val user = signInViewModel.signInUser(email.value, password.value)
                 if(user!=null){
-                    pageChange(Routes.Feed.route)
+                    pageChange(Routes.Profile.route)
                 }
             }
         }) {

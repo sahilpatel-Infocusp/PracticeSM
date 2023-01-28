@@ -1,5 +1,6 @@
 package com.companyname.practicesm.viewmodels
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.companyname.practicesm.auth.getUser
@@ -32,10 +33,13 @@ class SignUpViewModel : ViewModel() {
                     addUserData(getUser()!!.uid, name, username, email)
                 }
             }
+
             isLoading.value = false
             result && result1
         }catch (e:Exception){
+            isLoading.value = false
             errorMessage.value = e.toString()
+            Log.w("SignUp",e)
             false
         }
 

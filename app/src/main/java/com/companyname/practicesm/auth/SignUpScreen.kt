@@ -53,8 +53,9 @@ fun SignUpScreen(
     val password = rememberSaveable {
         mutableStateOf("")
     }
+
     val isLoading = rememberSaveable {
-        signUpViewModel.isLoading.value
+        signUpViewModel.isLoading
     }
 
     LaunchedEffect(key1 = signUpViewModel.errorMessage) {
@@ -62,10 +63,11 @@ fun SignUpScreen(
             if (it.isNotEmpty()) {
                 Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
             }
+            signUpViewModel.resetErrorMessage()
+
         }
-        signUpViewModel.resetErrorMessage()
     }
-    if (isLoading) {
+    if (isLoading.value) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center,
