@@ -16,6 +16,14 @@ class SignUpViewModel : ViewModel() {
     var isLoading = mutableStateOf(false)
     var errorMessage = MutableStateFlow("")
 
+    var email = mutableStateOf("")
+    var name = mutableStateOf("")
+    var username = mutableStateOf("")
+    var password = mutableStateOf("")
+
+
+
+
     suspend fun signUpUser(
         name: String,
         username: String,
@@ -25,7 +33,7 @@ class SignUpViewModel : ViewModel() {
         return try {
             isLoading.value = true
             val result = withContext(Dispatchers.IO) {
-                signUp(name, username, email, password)
+                signUp(email, password)
             }
             var result1 = false
             if(result) {

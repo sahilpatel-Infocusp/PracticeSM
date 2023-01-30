@@ -4,11 +4,11 @@ import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.material.Button
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Text
+import androidx.compose.material.TextField
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,13 +23,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.companyname.practicesm.routes.Routes
 import com.companyname.practicesm.viewmodels.SignInViewModel
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @Preview(showBackground = true)
 @Composable
-fun showSignInScreen(){
+fun ShowSignInScreen(){
     SignInScreen(pageChange = {})
 }
 @Composable
@@ -40,12 +39,13 @@ fun SignInScreen(
 ) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
-    val email = rememberSaveable {
-        mutableStateOf("")
+    val email by remember {
+        signInViewModel.email
     }
-    val password = rememberSaveable {
-        mutableStateOf("")
+    val password by remember {
+        signInViewModel.password
     }
+
 
 
 
@@ -81,16 +81,16 @@ fun SignInScreen(
             .fillMaxSize()
     ) {
         TextField(
-            value = email.value,
-            onValueChange = { email.value = it.trim() },
+            value = email,
+            onValueChange = { signInViewModel.email.value = it.trim() },
             label = { Text(text = "Email", textAlign = TextAlign.Center) },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Email,
             )
         )
         TextField(
-            value = password.value,
-            onValueChange = { password.value = it.trim() },
+            value = password,
+            onValueChange = { signInViewModel.password.value = it.trim() },
             label = { Text(text = "Password", textAlign = TextAlign.Center) },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Password,
@@ -100,7 +100,7 @@ fun SignInScreen(
         )
         Button(onClick = {
             scope.launch {
-                val user = signInViewModel.signInUser(email.value, password.value)
+                val user = signInViewModel.signInUser(email, password)
                 if(user!=null){
                     pageChange(Routes.Profile.route)
                 }
@@ -109,7 +109,7 @@ fun SignInScreen(
             Text(text = "Sign In", textAlign = TextAlign.Center)
         }
         Spacer(modifier = modifier.size(10.dp))
-        Row() {
+        Row {
             Text(text = "New User? Click here to ")
             Text(text = "Sign Up", color = Color.Blue, modifier = modifier.clickable {
                 pageChange(Routes.SignUp.route)

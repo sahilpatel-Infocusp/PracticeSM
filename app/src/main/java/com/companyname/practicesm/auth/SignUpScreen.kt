@@ -7,11 +7,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -41,21 +37,23 @@ fun SignUpScreen(
 
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
-    val email = rememberSaveable {
-        mutableStateOf("")
-    }
-    val name = rememberSaveable {
-        mutableStateOf("")
-    }
-    val username = rememberSaveable {
-        mutableStateOf("")
-    }
-    val password = rememberSaveable {
-        mutableStateOf("")
-    }
 
-    val isLoading = rememberSaveable {
+
+
+    val isLoading by remember {
         signUpViewModel.isLoading
+    }
+    val name by remember {
+        signUpViewModel.name
+    }
+    val username by remember {
+        signUpViewModel.username
+    }
+    val email by remember {
+        signUpViewModel.email
+    }
+    val password by remember {
+        signUpViewModel.password
     }
 
     LaunchedEffect(key1 = signUpViewModel.errorMessage) {
@@ -67,7 +65,7 @@ fun SignUpScreen(
 
         }
     }
-    if (isLoading.value) {
+    if (isLoading) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center,
@@ -85,32 +83,32 @@ fun SignUpScreen(
             .fillMaxSize()
     ) {
         TextField(
-            value = name.value,
-            onValueChange = { name.value = it.trim() },
+            value = name,
+            onValueChange = { signUpViewModel.name.value = it.trim() },
             label = { Text(text = "Name", textAlign = TextAlign.Center) },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Text,
             )
         )
         TextField(
-            value = username.value,
-            onValueChange = { username.value = it.trim() },
+            value = username,
+            onValueChange = { signUpViewModel.username.value = it.trim() },
             label = { Text(text = "Username", textAlign = TextAlign.Center) },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Text,
             )
         )
         TextField(
-            value = email.value,
-            onValueChange = { email.value = it.trim() },
+            value = email,
+            onValueChange = { signUpViewModel.email.value = it.trim() },
             label = { Text(text = "Email", textAlign = TextAlign.Center) },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Email,
             )
         )
         TextField(
-            value = password.value,
-            onValueChange = { password.value = it.trim() },
+            value = password,
+            onValueChange = { signUpViewModel.password.value = it.trim() },
             label = { Text(text = "Password", textAlign = TextAlign.Center) },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Password,
@@ -120,7 +118,7 @@ fun SignUpScreen(
         )
         Button(onClick = {
             scope.launch {
-                val result = signUpViewModel.signUpUser(name.value,username.value,email.value, password.value)
+                val result = signUpViewModel.signUpUser(name,username,email, password)
                 if (result) {
                     Toast.makeText(context, "Sign UP Successful", Toast.LENGTH_SHORT).show()
                     pageChange(Routes.SignIn.route)

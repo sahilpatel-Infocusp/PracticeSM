@@ -37,8 +37,6 @@ suspend fun signIn(
 
 
 suspend fun signUp(
-    name: String,
-    username: String,
     email: String,
     password: String
 ):Boolean{

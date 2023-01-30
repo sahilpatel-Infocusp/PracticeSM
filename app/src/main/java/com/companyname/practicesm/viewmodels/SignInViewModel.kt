@@ -13,6 +13,8 @@ class SignInViewModel:ViewModel() {
     var isLoading = mutableStateOf(false)
     val errorMessage = MutableStateFlow("")
 
+    var email = mutableStateOf("")
+    var password = mutableStateOf("")
     suspend fun signInUser(
         email:String,
         password:String
